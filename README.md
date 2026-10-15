@@ -1,2 +1,2 @@
 # Projects
-CySec Projects
+Cybersecurity Projects & Labs
