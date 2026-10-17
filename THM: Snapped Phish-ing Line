@@ -17,13 +17,11 @@ Objectives:
 **My Writeup**
 
 So right off the bat, we're given a set of emails to look at. 
-![image.png](https://share.jotbird.com/images/b8934671-0599-4719-88f2-50ab7f7f39df.png)
 
 **Q1 - Begin reviewing the emails in the phish-emails folder on your desktop. Which individual recieved the email regarding a **Quote for Services Rendered**?**
 
 Since the question is asking about Services Rendered, we'll start with that file. I opened it both as an .eml file and with Vim to look at the details and see if there was anything of note hiding in it.
-![image.png](https://share.jotbird.com/images/f365d5f7-0345-4f5d-8e80-c18de5c02edf.png)
-![image.png](https://share.jotbird.com/images/f58dcec2-acda-46be-9f87-3fcf1cdb6f6f.png)
+
 Looks like Mr. McClean was the one to receive it. However a big red flag is how many email servers this passed through. It went through 10 different mail servers and multiple countries traveling from the original sender of mailsvri-04.ssf.thm to our recipient and none of them seem associated with the "sender" or their company.
 
 Ans: William McClean
@@ -36,14 +34,12 @@ Ans: Accounts.Payable@groupmarketingonline.icu
 What is the root domain of the redirection URL found within the file?**
 
 So Zoe's email has an attachment in the form of a .html file. When we separate and inspect it, we find the redirect.
-![image.png](https://share.jotbird.com/images/f370ff39-f173-4ff3-989b-3140b3f24c90.png)
+
 
 Ans: kennaroads.buzz
 
 **Q4 - Investigate the attachment in the email addressed to Zoe Duncan.
 What is the root domain of the redirection URL found within the file?**
-
-![image.png](https://share.jotbird.com/images/1b17ce16-1a13-4ca9-b0a3-df620f4feca3.png)
 
 
 And looks just like a Microsoft or Outlook login. Big tells being the website address being kennaroads.buzz, it not being a secured site, and if you do try and interact with the 'Forgot my password' button, nothing happens. Shouldn't be interacting with anything on an obviously fake site, but it's a VM and we can play around.
@@ -52,15 +48,12 @@ And looks just like a Microsoft or Outlook login. Big tells being the website ad
 Navigate to the /data directory.
 What is the name of the archive file?**
 
-![image.png](https://share.jotbird.com/images/e4ee4fef-781e-4564-9695-6d763712c1ff.png)
-![image.png](https://share.jotbird.com/images/25a54e05-d018-4709-bd32-e7653c71ab0c.png)
 
 Ans: Update365.zip
 
 **Q6 - Download the phishing kit archive to your virtual environment.
 Using the sha256sum command, what is the SHA256 hash of the file?**
 
-![image.png](https://share.jotbird.com/images/d245f724-a8bc-4b81-b774-1c9839c4c65f.png)
 
 Ans: ba3c15267393419eb08c7b2652b8b6b39b406ef300ae8a18fee4d16b19ac9686
 
@@ -68,14 +61,13 @@ Ans: ba3c15267393419eb08c7b2652b8b6b39b406ef300ae8a18fee4d16b19ac9686
 Aside from phishing, what other threat category is assigned to the ZIP archive?**
 
 Went to VirusTotal.com and uploaded the hash we found above. But the file would also work.
-![image.png](https://share.jotbird.com/images/97bef522-3398-4f8d-899e-ae536956e931.png)
+
 
 Ans: Trojan
 
 **Q8 - Review the VirusTotal Details page for the phishing kit.
 How many files are contained within the archive?**
 
-![image.png](https://share.jotbird.com/images/ff778aec-d21d-4ff9-bdcc-8c06bc03b3df.png)
 
 Ans: 49
 
@@ -90,7 +82,6 @@ Ans: michael.ascot@swiftspend.finance
 **Q10 - Extract the phishing kit archive and locate the submit.php file.
 What email address is used by the adversary to collect compromised credentials?**
 
-![image.png](https://share.jotbird.com/images/4cae2c30-ce86-4f5f-bbc3-059c74ddff23.png)
 
 Here's why we saw so many random countries popping up for the email servers it was filtered through. They're using a javascript to route though fake emails and countries picked at arandom by geoplugin.net. But the email it's being sent to is found on line 49 - m3npat@yandex.com
 
@@ -100,16 +91,13 @@ Ans: m3npat@yandex.com
 Using CyberChef to decode the flag, what is the secret value?**
 
 Going back to the phishing site, we navigate back to the directory. In the ZIP folder and in the directories that are showing, there doesn't seem to be a flag.txt file anywhere - which means it's likely hidden. After poking around a bit with various URLs, we finally find one hidden at office365/flag.txt 
-![image.png](https://share.jotbird.com/images/5cc15b68-d954-435d-9cfb-1bab1d827f2b.png)
+
 
 Now to Cyberchef to decrypt the hidden flag. Using the magic recipe to tell us what type of encryption it likely is, we find that it's probably Base85
 
-![image.png](https://share.jotbird.com/images/73b9adc8-74f9-4b6b-841d-a7aaf2d17395.png)
-![image.png](https://share.jotbird.com/images/5bb5297d-025e-4e69-b84b-5201ac39e01c.png)
 
 Hmm, looks like Base85 isn't working. Let's try Base64
 
-![image.png](https://share.jotbird.com/images/5046e022-aac8-4f27-80b6-e9586190dc3f.png)
 
 That looks like our flag, just reversed. If we reverse it, we get THM{pL4y_w1Th_tH3_URL} which is our final flag!
 
