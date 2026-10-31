@@ -1,0 +1,33 @@
+## Here's my take on the THM Injectics room
+### Focused on use of web injections and penetration testing utilizing Burpsuite, SQL injections, and PHP exploits
+
+### *Can you utilize your web pen-testing skills to safeguard the event from any injection attack?*
+
+*Q1.) What is the flag value after logging into the admin panel?*
+
+*Q2.) What is the content of the hidden text file in the flags folder?*
+
+Ok first thing is first, we do a little recon. We're going to map out what ports are open, and open the website itself to see if there's any injectable fields.
+
+Looks like we couldn't access the admin007.js even with me spelling it right the second time, but the regular script.js file does have our login paramaters as well as a defense against SQL injections in the final lines. Preventing or, and, union, select, etc. from being entered. But we can see that there's a login portal and only 2 ports open, 22 for SSH and 80 for HTTP. And inspecting the website itself we can find our first email, dev*@*injectics.thm. Off to a good start, since now we should be able to brute force the passwords into the admin login.
+
+And no such luck. Going back to the email and original webpage, they did mention a mail log file. Maybe that'll prove more useful?
+
+Sure enough, we've got 2 new logins to try and a note that if the users table becomes corrupted, it'll default to these credentials. First, let's try and see if the old credentials work. Neither do, the passwords have been changed. But that's alright, since now we can see about modifying the input and response in Burpsuite.
+
+No go on the admin portal! Let's try the regular login
+
+And we're in! We're greeted with a editable table for all the countries, which allows us to insert another SQL injection resetting the table paramaters
+22; DROP TABLE users;/*
+
+And the website is broken - normally this would be a problem, but given that we wanted to break the database to reset the login credentials to the default, now we should have an easy access into the admin portal.
+
+#### Q1.) Ans: THM{INJECTICS_ADMIN_PANEL_007}
+
+And onto the second question. Poking around at the links proved largely fruitless except for the Profile button, which gave us another field to play with. However, we don't know where to even begin looking since the question references a flags folder. Back to checking directories.
+
+So we know it's there. Now how to access it. The admin profile panel is susceptible to SSTI (server side template injection), which we can check by seeing if it'll follow a math command rather than just plaintext.
+
+Referencing https://medium.com/@bootstrapsecurity/server-side-template-injection-ssti-advanced-exploitation-techniques-2d8ccdf6270f for SSTI injection types, we just need to decipher how to extract the contents of the flag folder. After searching around a bit, I found that you can utilize the passthru command to search the databases (even hidden/forbidden) for possible files. By inputting the command {{ ['find -type f -name "*.txt" 2>/dev/null','']| sort('passthru')|join }}, we can search for any text files on the server and return them as our new username. And with the newfound file address, we can pull the document directly off the site without having to access the files folder directly, giving us our final flag.
+
+#### Q2.) Ans: THM{5735172b6c147f4dd649872f73e0fdea}
