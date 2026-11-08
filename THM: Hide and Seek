@@ -20,59 +20,35 @@ I must say, it’s been a thrill dancing through your systems. You lock the door
 
 First things first, we boot up and get a lay of the land. The user folder contains a document titled *'for_specter.txt'*, so that'll be our starting point. Sure enough, it's just a similar note to the one left in our intro.
 
-![image.png](https://share.jotbird.com/images/9d2d1777-d539-45be-b43b-6ed218c62224.png)
-
 The puzzle here points towards routine updates or process running on a timer, some kind of TCP handshake, boot sequences, and welcome messages? So that gives us a few places to start. Sure enough as I was typing up my report, a software updater popped up prompting us to install some updates. Totally not suspicious.
-
-![image.png](https://share.jotbird.com/images/a00b432e-f8bc-4036-a958-5f9dd3ae0d7c.png)
 
 ### *Time is on my side, always running like clockwork.*
 First, we'll check our crontab since this seems like it calls back to a scheduled event.
-
-![image.png](https://share.jotbird.com/images/2aa29269-4a3e-46fe-899c-4f4cee4217fb.png)
-![image.png](https://share.jotbird.com/images/17e1fad5-c2ff-4d55-a94b-c6cdf9e45333.png)
-![image.png](https://share.jotbird.com/images/e06141e3-f891-4a32-ac96-e837653392f8.png)
-![image.png](https://share.jotbird.com/images/04a5a7dd-5660-4416-b003-675b74a780bf.png)
 
 And a piece hidden in the crontab notes. Taking the decrypted flag, it didn't want to pull up the website as listed, so we can use the first characters plugged into [CyberChef](https://gchq.github.io/CyberChef/) and let it run it's magic to find the first part of the flag, THM{y0
 
 ### *A secret handshake gets me in every time.*
 This could be a SSH reference. Browsing through the other users on the system, we can find one that had a ssh key with what looks like another sha2 encryption
 
-![image.png](https://share.jotbird.com/images/8666f2ac-f090-4cff-b327-7a0a77f0ef96.png)
-![image.png](https://share.jotbird.com/images/218dd0d6-8ede-43cb-a8e6-835d85d058cd.png)
-
 And that's another piece of the puzzle u_g0t_
 
 ### *Whenever you set the stage, I make my entrance.*
 This one had me stumped for a bit, but after digging around online a bit I found that stage could also be a reference to a user logging in. Which given that most of the other references to staging were already covered by the other hints, this feels like we're on the right track.
-
-![image.png](https://share.jotbird.com/images/843709f9-ed69-472c-a6fe-88cb1cf3e6f0.png)
-![image.png](https://share.jotbird.com/images/00c0c8f6-cbc5-4375-a775-d09ee66e2e60.png)
 
 I think I'm getting the pattern, many kudos to CyberChef for making the decryption process so much easier. Third part of the flag, 3v3ryt
 
 ### *I run with the big dogs, booting up alongside the system.*
 Looking into the references to a malicious program in the boot files. ls -la /etc/cron.d/ and /cron.daily/ to see what cron (our scheduling daemon) has.
 
-![image.png](https://share.jotbird.com/images/54111ef7-9674-48ac-9f26-57cf71a711ab.png)
-
 Nothing seemingly out of the ordinary. We can also check the systemd directory.
 
-![image.png](https://share.jotbird.com/images/800e8d5b-9802-487f-b7d5-e70f7e9ac0d9.png)
-
 And there we go, *cipher.service*. 
-
-![image.png](https://share.jotbird.com/images/01df90ba-54c2-4723-acd3-f38f8c29611c.png)
 
 Now we've got the 4th part of the flag, h1ng_
 
 ### *I love welcome messages.*
 
 And we're on the final piece of the puzzle. This screams message when you boot up, ala a MOTD.
-
-![image.png](https://share.jotbird.com/images/a40451f7-f6f0-443f-aa55-3d575059931a.png)
-![image.png](https://share.jotbird.com/images/dedfb6f4-4c6a-48b9-aff8-2a4b20ab03d1.png)
 
 And that's our final part of the flag! Now when we put it all together, we get:
 
